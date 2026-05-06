@@ -6,8 +6,8 @@ clc;
 %  FRINGE RESOLVED SHG INTERFEROMETRIC AUTOCORRELATION SIMULATOR
 %
 %  Author: Asad Mahmood
-%  LinkedIn:
-%  GitHub:
+%  LinkedIn:https://www.linkedin.com/in/asad-mahmood-a3313228a/
+%  GitHub:https://github.com/AsadOptics
 %% ============================================================
 
 %% ============================================================
