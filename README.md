@@ -4,83 +4,114 @@ A MATLAB forward simulator for fringe resolved second harmonic generation, SHG, 
 
 This code helps visualize how an ultrafast pulse and its autocorrelation trace change when the pulse accumulates dispersion from optical components between the laser source and the autocorrelator.
 
-It can be used as a debugging tool, a forward model, or a learning tool for understanding why a measured fringe resolved autocorrelation trace may look different from an ideal transform limited pulse.
+It can be used as a debugging tool, forward model, or a learning tool for understanding why a measured fringe resolved autocorrelation trace may look different from an ideal transform limited pulse.
+
+---
+
+## Purpose
+
+Short ultrafast pulses are very sensitive to dispersion.
+
+Even if the pulse is close to transform limited at the laser output, the measured autocorrelation trace can change after the pulse passes through:
+
+- chirped mirrors
+- dielectric mirrors
+- Bragg mirrors
+- air
+- glass
+- compressor optics
+- nonlinear crystal or substrate inside the autocorrelator
+- any other optical element in the beam path
+
+This simulator lets the user include these phase contributions and see how the fringe resolved SHG autocorrelation trace changes.
 
 ---
 
 ## What this code does
 
-The simulator calculates a fringe resolved SHG autocorrelation trace using
+The code starts from either:
 
-$$S(\tau) \propto \int |E(t) + E(t-\tau)|^4 dt$$
+- a measured laser spectrum
+- a Gaussian temporal pulse
+- a sech temporal pulse
+- a super Gaussian temporal pulse
+- a user defined custom temporal pulse
 
-where \(E(t)\) is the electric field of the pulse and \(\tau\) is the delay between two replicas of the pulse.
+Then it applies spectral phase from optical components.
 
-The code can start from either:
+The final pulse is used to calculate the fringe resolved SHG interferometric autocorrelation trace.
 
-- A measured laser spectrum
-- A Gaussian temporal pulse
-- A sech temporal pulse
-- A super Gaussian temporal pulse
-- A user defined custom temporal pulse
+The main autocorrelation model is
 
-Then it applies spectral phase from optical components such as:
+$$
+S(\tau) \propto \int_{-\infty}^{\infty}
+\left|E(t) + E(t-\tau)\right|^4 dt
+$$
 
-- Chirped mirrors
-- Dielectric mirrors
-- Bragg mirrors
-- Air propagation
-- Glass or other optical media
-- Compressor optics
-- Nonlinear crystal/substrate inside the autocorrelator
-- Any additional user defined optical component
+where \(E(t)\) is the electric field of the pulse and \(\tau\) is the delay between the two replicas of the pulse.
 
-The code then simulates:
+This expression comes from the SHG field being proportional to the square of the total electric field:
 
-- Fringe resolved SHG autocorrelation trace
-- Background free intensity autocorrelation
-- Optional movie showing the autocorrelation trace buildup
-- Optional diagnostic plots for spectrum, spectral phase, temporal intensity, and FFT of the autocorrelation trace
+$$
+E_{2\omega}(t,\tau) \propto \left[E(t) + E(t-\tau)\right]^2
+$$
 
----
+and the measured SHG signal being proportional to the time integrated intensity:
 
-## Why this is useful
+$$
+S(\tau) \propto \int \left|E_{2\omega}(t,\tau)\right|^2 dt
+$$
 
-When working with short pulses, especially near 10 fs or below, even small amounts of dispersion can strongly affect the measured autocorrelation trace.
+Therefore,
 
-There may be many optical components between the laser head and the autocorrelator. Each one can contribute group delay, GDD, TOD, or higher order phase.
+$$
+S(\tau) \propto \int
+\left|\left[E(t) + E(t-\tau)\right]^2\right|^2 dt
+$$
 
-This simulator lets the user include those known or estimated contributions and see how the autocorrelation trace changes.
+or
 
-It is especially useful for students and researchers learning:
-
-- Fringe resolved autocorrelation
-- SHG autocorrelation
-- GDD and TOD
-- Spectral phase
-- Few cycle pulse distortion
-- Effects of mirrors, air, glass, and autocorrelator crystals
+$$
+S(\tau) \propto \int
+\left|E(t) + E(t-\tau)\right|^4 dt
+$$
 
 ---
 
-## What this code is not
+## How dispersion is applied to the pulse
 
-This code is not a replacement for full pulse retrieval methods such as:
+The code works in the spectral domain.
 
-- FROG
-- SPIDER
-- d-scan
-- MIIPS
+If the initial spectral field is
 
-It is a forward simulator. It shows what autocorrelation trace is expected from a given input pulse and a given set of dispersion terms.
+$$
+\tilde{E}_{\mathrm{in}}(\omega)
+$$
 
-It does not uniquely retrieve the full electric field from an experimental trace.
+then the code applies spectral phase as
 
----
+$$
+\tilde{E}_{\mathrm{out}}(\omega)
+=
+\tilde{E}_{\mathrm{in}}(\omega)
+\exp\left[i\phi(\omega)\right]
+$$
 
-## Input options
+where \(\phi(\omega)\) is the total spectral phase from all optical components.
 
-The main input type is selected near the beginning of the MATLAB file:
+The time domain pulse is then obtained using an inverse Fourier transform:
+
+$$
+E_{\mathrm{out}}(t)
+=
+\mathcal{F}^{-1}
+\left[
+\tilde{E}_{\mathrm{out}}(\omega)
+\right]
+$$
+
+In the code, this is done by
 
 ```matlab
-input_type = 'spectrum';
+E_omega = E_omega_initial .* exp(1i .* PHI_TOTAL);
+E_t = fftshift(ifft(ifftshift(E_omega)));
