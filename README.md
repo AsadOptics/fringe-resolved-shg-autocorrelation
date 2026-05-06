@@ -12,9 +12,7 @@ It can be used as a debugging tool, a forward model, or a learning tool for unde
 
 The simulator calculates a fringe resolved SHG autocorrelation trace using
 
-\[
-S(\tau) \propto \int |E(t) + E(t-\tau)|^4 dt
-\]
+$$S(\tau) \propto \int |E(t) + E(t-\tau)|^4 dt$$
 
 where \(E(t)\) is the electric field of the pulse and \(\tau\) is the delay between two replicas of the pulse.
 
