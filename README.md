@@ -567,4 +567,4 @@ University of Nebraska Lincoln
 Ultrafast optics, nonlinear optics, and optical pulse characterization  
 
 GitHub: AsadOptics  
-LinkedIn: (https://www.linkedin.com/in/asad-mahmood-a3313228a/)
+LinkedIn: https://www.linkedin.com/in/asad-mahmood-a3313228a/
