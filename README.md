@@ -6,6 +6,8 @@ This code helps visualize how an ultrafast pulse and its autocorrelation trace c
 
 It can be used as a learning tool, debugging tool, or forward model for understanding why a measured fringe resolved autocorrelation trace may look different from an ideal transform limited pulse.
 
+It can be upgraded to higher order fringe resolved autocorrelators. For instance, if the nonlinear crystal/detector is THG, FHG, replace the power of (E1+E2) in line#914 from 2(default value) to 3 or 4 respectively. 
+
 ---
 
 ## Purpose
