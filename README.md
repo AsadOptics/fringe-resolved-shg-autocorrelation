@@ -6,7 +6,9 @@ This code helps visualize how an ultrafast pulse and its autocorrelation trace c
 
 It can be used as a learning tool, debugging tool, or forward model for understanding why a measured fringe resolved autocorrelation trace may look different from an ideal transform limited pulse.
 
-It can be upgraded to higher order fringe resolved autocorrelators. For instance, if the nonlinear crystal/detector is THG, FHG, replace the power of (E1+E2) in line#914 from 2(default value) to 3 or 4 respectively. 
+It can be upgraded to higher order fringe resolved autocorrelators. For instance, if the nonlinear crystal/detector is THG, FHG, replace the power of (E1+E2) in line#914 from 2(default value) to 3 or 4 respectively.
+
+Small note: by default, the code uses SHG, so line #914 has (E1 + E2)^2. For a direct photodiode signal, use power 1. For higher-order light detection, replace it with the relevant order. For example, use 3 for a three-photon process, 4 for a four-photon process, etc.
 
 ---
 
